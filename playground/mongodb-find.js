@@ -28,3 +28,6 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
 
     //db.close(); // finally, close the connection anyway
 });
+
+// git remote add origin https://github.com/crodrigoquero/node-course-2-todo-api.git
+// git push -u origin master
