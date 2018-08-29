@@ -41,10 +41,11 @@ app.get('/todos/:id', (req, res) => {
 
     Todo.findById(id).then((todo) => {
         if (!todo) {
-           return res.status(500).send();
+           return res.status(404).send();
         }
             
-        res.send(todo); // we respondo with an object which has a 'todo' property (simplified notation, when the properti name and the value have same name)
+        res.send({todo}); // ES object notation, equivalent to "{todo: todo}"
+        // we respondo with an object which has a 'todo' property (simplified notation, when the properti name and the value have same name)
     }).catch((e) => {
         res.status(400).send();
     });
