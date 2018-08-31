@@ -97,7 +97,8 @@ app.patch('/todos/:id', (req, res) => {
             return res.status(404).send(); // return keyword stops execution here
         }
 
-        res.send(todo); // success!!! RECORD WAS REALLY UPDATED. send some feedback, please
+        res.send({todo}); // success!!! RECORD WAS REALLY UPDATED. send some feedback, please
+        // CUIDADO! noes lo mismo 'res.send(todo)' que res.send({todo}) (con corchetes) 
     }).catch((e) => {
         res.status(400).send();
     })
