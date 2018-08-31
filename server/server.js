@@ -1,6 +1,7 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var {ObjectID} = require('mongodb');
+const _ = require('lodash');
+const express = require('express');
+const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose.js');
 var {Todo} = require('./models/todo');
@@ -73,6 +74,34 @@ app.delete('/todos/:id', (req, res) => {
     });
 });
 
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+    // The pick utility allows us to select the properties we want from a target object. 
+    // We can achieve the same results using destructuring and shorthand object literals?
+
+    // validate the id comming from http request (eq)
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send(); // if is not valid id send a 404 http error
+    }
+
+    if (_.isBoolean(body.completed) && body.completed) { // from lodahs
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+        if (!todo) {
+            return res.status(404).send(); // return keyword stops execution here
+        }
+
+        res.send(todo); // success!!! RECORD WAS REALLY UPDATED. send some feedback, please
+    }).catch((e) => {
+        res.status(400).send();
+    })
+});
 
 app.listen(port, () => {
     console.log(`Started up at port ${port}`);
