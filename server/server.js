@@ -8,6 +8,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose.js');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT || 3000; // ir PORT variable is not defined, set port to 3000 ('||' = 'or')
@@ -110,17 +111,22 @@ app.patch('/todos/:id', (req, res) => {
 app.post('/users', (req, res) => {
     var body = _.pick(req.body, ['email','password']);
     var user = new User(req.body);
-    console.log(body);
+    //console.log(body);
 
 
     user.save().then(() => {
         return user.generateAuthToken();
         //res.send(user);
     }).then((token) => {
-        res.header('x-auth', token).send(user);
+        res.header('x-auth', token).send(user); // when you prefix a header with x- you create a custom header, just for you
     }).catch((e) => {
         res.status(400).send(e);
     });
+});
+
+
+app.get('/users/me', authenticate ,(req, res) => {
+    res.send(req.user);  
 });
 
 app.listen(port, () => {
