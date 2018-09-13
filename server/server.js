@@ -116,7 +116,7 @@ app.post('/users', (req, res) => {
 
     user.save().then(() => {
         return user.generateAuthToken();
-        //res.send(user);
+        //res.send(user); // this line of code just send/saves de user without authentication token
     }).then((token) => {
         res.header('x-auth', token).send(user); // when you prefix a header with x- you create a custom header, just for you
     }).catch((e) => {
