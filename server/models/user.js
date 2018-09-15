@@ -51,7 +51,7 @@ UserSchema.methods.generateAuthToken = function () { // UserSchema.methods, is a
     // "this" stores the individual document (user)
     var user = this; //this why we used a regular function, becasuse arrow funcs doesn't binds "this" keyword
     var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString(); //"we can write {access: access} as  well"
+    var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString(); //"we can write {access: access} as  well"
     // abc123 is the secret or private key.
     user.tokens = user.tokens.concat({access, token}); //user.tokens.push({access, token});
     // user.tokens is n array (sse the doc shcema on the to of this module). Now, user doc
@@ -76,7 +76,7 @@ UserSchema.statics.findByToken = function(token) {
     var decoded;
 
     try {
-        decoded =jwt.verify(token, 'abc123');
+        decoded =jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
         // return new Promise((resolve, reject) => {
         //     reject();
